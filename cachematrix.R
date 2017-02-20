@@ -1,17 +1,31 @@
-## Put comments here that give an overall description of what your
-## functions do
+## This script creates two objects for use in caching the inverse of
+## a matrix
+## makeCacheMatrix - object that stores a matrix and its inverse
+## cacheSolve - using a makeCacheMatrix object, returns the inverse
+##              of a matrix.
 
-## Write a short comment describing this function
-
+## makeCacheMatrix
+## Object that stores a passed matrix and its inverse
 makeCacheMatrix <- function(x = matrix()) {
-  m <- NULL
+  ## inv stores the inverse of the input matrix
+  inv <- NULL
+  
+  ## set method - constructer
   set <- function(y) {
             x <<- y
-            m <<- NULL
+            inv <<- NULL
   }
+  
+  ## get method - retrieves current matrix
   get <- function() x
-  setinverse <- function(solve) m <<- solve
-  getinverse <- function() m
+  
+  ## setinverse method - stores the matrix inverse
+  setinverse <- function(solve) inv <<- solve
+  
+  ## getinverse method - returns the stored matrix inverse
+  getinverse <- function() inv
+  
+  ## list method - lists the methods associated with the object
   list(set = set,
        get = get,
        setinverse = setinverse,
@@ -19,17 +33,17 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-## Write a short comment describing this function
-
+## cacheSolve
+## Given a makeCacheMatrix object, either returns the cached inverse
+## or creates the inverse, caches it, and returns it
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
-  m <- x$getinverse()
-  if(!is.null(m)) {
+  inv <- x$getinverse()      ## get the currently cached inverse
+  if(!is.null(inv)) {        ## if inverse exists, return it
     message("getting cached data")
-    return(m)
+    return(inv)
   }
-  data <- x$get()
-  m <- solve(data, ...)
-  x$setinverse(m)
-  m
+  data <- x$get()           ## inverse didn't exit - get the matrix
+  inv <- solve(data, ...)   ## invert the matrix
+  x$setinverse(inv)         ## cache the inverse
+  inv                       ## return the inverse
 }
